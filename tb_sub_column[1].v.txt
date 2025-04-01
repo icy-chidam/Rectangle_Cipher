@@ -1,0 +1,64 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 16.03.2025 22:02:33
+// Design Name: 
+// Module Name: tb_sub_column
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+module tb_sub_column;
+    reg clk;
+    reg rst;
+    reg [63:0] state;
+    wire [63:0] new_state;
+
+    // Instantiate the module
+    sub_column uut (
+        .clk(clk),
+        .rst(rst),
+        .state(state),
+        .new_state(new_state)
+    );
+
+    // Clock Generation (50% Duty Cycle)
+    always #5 clk = ~clk; // Toggle clock every 5 time units
+
+    initial begin
+        clk = 0;
+        rst = 1;  // Apply reset
+        state = 64'h0000000000000000;  // Initialize state
+
+        #10 rst = 0; // Release reset
+
+        // Test Case 1
+        state = 64'h1111111111111111;  // Example state
+        #10;  // Wait for clock cycle
+        $display("Test Case 1:");
+        $display("Input State  : %h", state);
+        $display("Output State : %h", new_state);
+
+        // Test Case 2
+        state = 64'hFEDCBA9876543210;  // Different input
+        #10;  // Wait for clock cycle
+        $display("Test Case 2:");
+        $display("Input State  : %h", state);
+        $display("Output State : %h", new_state);
+
+        #20 $finish; // End simulation
+    end
+endmodule
+
+
+
