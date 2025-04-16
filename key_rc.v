@@ -3,7 +3,7 @@ module key_rc(
     output reg [4:0] current_round_constant,
     output reg [79:0] key_out,
     input wire clk,
-    input wire rst
+    input wire rst  // Make this active-high and synchronous
 );
 
     reg [4:0] round_constants [0:24];
@@ -19,20 +19,17 @@ module key_rc(
         round_constants[12] = 5'h0F; round_constants[13] = 5'h1F; round_constants[14] = 5'h1E;
         round_constants[15] = 5'h1C; round_constants[16] = 5'h18; round_constants[17] = 5'h11;
         round_constants[18] = 5'h03; round_constants[19] = 5'h06; round_constants[20] = 5'h0D;
-        round_constants[21] = 5'h1B; round_constants[22] = 5'h17;
-        round_constants[23] = 5'h0E;
+        round_constants[21] = 5'h1B; round_constants[22] = 5'h17; round_constants[23] = 5'h0E;
         round_constants[24] = 5'h1D;
     end
 
-    // Sequential logic
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk) begin
         if (rst) begin
             current_key <= key_in;
             key_out <= key_in;
             round_count <= 0;
-            current_round_constant <= 0;
+            current_round_constant <= 1;
         end else if (round_count < 25) begin
-            current_key <= key_in;
             current_key[4:0] <= current_key[4:0] ^ round_constants[round_count];
             key_out <= current_key;
             current_round_constant <= round_constants[round_count];
